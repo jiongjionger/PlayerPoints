@@ -1,32 +1,30 @@
 package org.black_ixx.playerpoints.update;
 
+import org.black_ixx.playerpoints.PlayerPoints;
+import org.black_ixx.playerpoints.services.version.Version;
+import org.black_ixx.playerpoints.update.modules.OneFiveTwoUpdate;
+import org.black_ixx.playerpoints.update.modules.OneFiveUpdate;
+import org.black_ixx.playerpoints.update.modules.TwoZeroZeroUpdate;
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.black_ixx.playerpoints.PlayerPoints;
-import org.black_ixx.playerpoints.services.version.Version;
-import org.black_ixx.playerpoints.update.modules.TwoZeroZeroUpdate;
-import org.black_ixx.playerpoints.update.modules.OneFiveTwoUpdate;
-import org.black_ixx.playerpoints.update.modules.OneFiveUpdate;
-import org.bukkit.configuration.ConfigurationSection;
-
 public class UpdateManager {
 
+    /**
+     * Update modules.
+     */
+    private final SortedSet<UpdateModule> modules = new TreeSet<UpdateModule>();
     /**
      * Plugin instance.
      */
     private PlayerPoints plugin;
 
     /**
-     * Update modules.
-     */
-    private final SortedSet<UpdateModule> modules = new TreeSet<UpdateModule>();
-
-    /**
      * Constructor.
-     * 
-     * @param plugin
-     *            - Plugin instance.
+     *
+     * @param plugin - Plugin instance.
      */
     public UpdateManager(final PlayerPoints plugin) {
         this.plugin = plugin;
@@ -44,14 +42,14 @@ public class UpdateManager {
         final ConfigurationSection config = plugin.getConfig();
         final Version version = new Version(plugin.getDescription()
                 .getVersion());
-        if(!version.validate()) {
+        if (!version.validate()) {
             version.setIgnorePatch(true);
         }
         Version current = new Version(config.getString("version"));
-        if(!current.validate()) {
+        if (!current.validate()) {
             current.setIgnorePatch(true);
         }
-        if(version.compareTo(current) > 0) {
+        if (version.compareTo(current) > 0) {
             // Update to latest version
             plugin.getLogger().info(
                     "Updating to v" + plugin.getDescription().getVersion());
@@ -64,8 +62,8 @@ public class UpdateManager {
      */
     private void update(final Version current) {
         // Run through update modules.
-        for(UpdateModule module : modules) {
-            if(module.shouldApplyUpdate(current)) {
+        for (UpdateModule module : modules) {
+            if (module.shouldApplyUpdate(current)) {
                 plugin.getLogger().info(
                         "Applying update for " + module.getTargetVersion());
                 module.update();

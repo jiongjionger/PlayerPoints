@@ -1,15 +1,21 @@
 package org.black_ixx.playerpoints.storage;
 
-import java.util.Collection;
-
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.config.RootConfig;
 import org.black_ixx.playerpoints.services.IModule;
+import org.bukkit.command.CommandSender;
+
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * Storage handler for getting / setting info between YAML, SQLite, and MYSQL.
  */
 public class StorageHandler implements IStorage, IModule {
+    /**
+     * Current storage of player points information.
+     */
+    IStorage storage;
     /**
      * Plugin instance.
      */
@@ -18,16 +24,11 @@ public class StorageHandler implements IStorage, IModule {
      * Generator for storage objects.
      */
     private StorageGenerator generator;
-    /**
-     * Current storage of player points information.
-     */
-    IStorage storage;
 
     /**
      * Constructor.
-     * 
-     * @param plugin
-     *            - PlayerPoints plugin instance.
+     *
+     * @param plugin - PlayerPoints plugin instance.
      */
     public StorageHandler(PlayerPoints plugin) {
         this.plugin = plugin;
@@ -54,9 +55,10 @@ public class StorageHandler implements IStorage, IModule {
         return storage.removePlayer(id);
     }
 
+
     @Override
-    public Collection<String> getPlayers() {
-        return storage.getPlayers();
+    public void logPlayerPointsChange(String playerName, CommandSender commandSender, int amount) {
+        this.storage.logPlayerPointsChange(playerName, commandSender, amount);
     }
 
     @Override
@@ -78,6 +80,11 @@ public class StorageHandler implements IStorage, IModule {
     @Override
     public boolean build() {
         return storage.build();
+    }
+
+    @Override
+    public void getPlayers(Consumer<Collection<String>> collectionConsumer) {
+        this.storage.getPlayers(collectionConsumer);
     }
 
 }

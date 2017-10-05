@@ -1,50 +1,46 @@
 package org.black_ixx.playerpoints.config;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.EnumMap;
-import java.util.Map.Entry;
-
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.models.Flag;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.EnumMap;
+import java.util.Map.Entry;
+
 /**
  * Handles user-based messages.
- * 
+ *
  * @author Mitsugaru
  */
 public class LocalizeConfig {
-
-    /**
-     * Plugin instance.
-     */
-    private static PlayerPoints plugin;
-
-    /**
-     * File reference.
-     */
-    private static File file;
-
-    /**
-     * YAML config.
-     */
-    private static YamlConfiguration config;
 
     /**
      * Map of config keys to values.
      */
     private static final EnumMap<LocalizeNode, String> MESSAGES = new EnumMap<LocalizeNode, String>(
             LocalizeNode.class);
+    /**
+     * Plugin instance.
+     */
+    private static PlayerPoints plugin;
+    /**
+     * File reference.
+     */
+    private static File file;
+    /**
+     * YAML config.
+     */
+    private static YamlConfiguration config;
 
     /**
      * Initialize.
-     * 
-     * @param pp
-     *            - Plugin instance.
+     *
+     * @param pp - Plugin instance.
      */
     public static void init(PlayerPoints pp) {
         plugin = pp;
@@ -60,7 +56,7 @@ public class LocalizeConfig {
         try {
             // Save the file
             config.save(file);
-        } catch(IOException e1) {
+        } catch (IOException e1) {
             plugin.getLogger().warning(
                     "File I/O Exception on saving localization config");
             e1.printStackTrace();
@@ -70,11 +66,11 @@ public class LocalizeConfig {
     public static void reload() {
         try {
             config.load(file);
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        } catch(InvalidConfigurationException e) {
+        } catch (InvalidConfigurationException e) {
             e.printStackTrace();
         }
         MESSAGES.clear();
@@ -93,8 +89,8 @@ public class LocalizeConfig {
 
     private static void loadDefaults() {
         // Add to config if missing
-        for(LocalizeNode node : LocalizeNode.values()) {
-            if(!config.contains(node.getPath())) {
+        for (LocalizeNode node : LocalizeNode.values()) {
+            if (!config.contains(node.getPath())) {
                 config.set(node.getPath(), node.getDefaultValue());
             }
         }
@@ -102,14 +98,14 @@ public class LocalizeConfig {
     }
 
     private static void loadMessages() {
-        for(LocalizeNode node : LocalizeNode.values()) {
+        for (LocalizeNode node : LocalizeNode.values()) {
             MESSAGES.put(node,
                     config.getString(node.getPath(), node.getDefaultValue()));
         }
     }
 
     public static String parseString(LocalizeNode node,
-            EnumMap<Flag, String> replace) {
+                                     EnumMap<Flag, String> replace) {
         /**
          * Thanks to @Njol for the following
          * http://forums.bukkit.org/threads/multiple
@@ -117,8 +113,8 @@ public class LocalizeConfig {
          */
         String out = ChatColor.translateAlternateColorCodes('&',
                 MESSAGES.get(node));
-        if(replace != null) {
-            for(Entry<Flag, String> entry : replace.entrySet()) {
+        if (replace != null) {
+            for (Entry<Flag, String> entry : replace.entrySet()) {
                 out = out
                         .replaceAll(entry.getKey().getFlag(), entry.getValue());
             }

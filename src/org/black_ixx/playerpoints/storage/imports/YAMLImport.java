@@ -1,25 +1,24 @@
 package org.black_ixx.playerpoints.storage.imports;
 
-import java.io.File;
-
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.storage.IStorage;
 import org.black_ixx.playerpoints.storage.StorageType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
+
 /**
  * Import from YAML to MySQL.
- * 
+ *
  * @author Mitsugaru
  */
 public class YAMLImport extends DatabaseImport {
 
     /**
      * Constructor.
-     * 
-     * @param plugin
-     *            - Plugin instance.
+     *
+     * @param plugin - Plugin instance.
      */
     public YAMLImport(PlayerPoints plugin) {
         super(plugin);
@@ -35,7 +34,7 @@ public class YAMLImport extends DatabaseImport {
                         .getAbsolutePath() + "/storage.yml"));
         final ConfigurationSection points = config
                 .getConfigurationSection("Points");
-        for(String key : points.getKeys(false)) {
+        for (String key : points.getKeys(false)) {
             mysql.setPoints(key, points.getInt(key));
         }
     }

@@ -17,9 +17,8 @@ public abstract class UpdateModule implements Comparable<UpdateModule> {
 
     /**
      * Constructor.
-     * 
-     * @param plugin
-     *            - Plugin reference
+     *
+     * @param plugin - Plugin reference
      */
     public UpdateModule(final PlayerPoints plugin) {
         this.plugin = plugin;
@@ -27,7 +26,7 @@ public abstract class UpdateModule implements Comparable<UpdateModule> {
 
     /**
      * Get the target version this module applies to.
-     * 
+     *
      * @return Version for update module.
      */
     public Version getTargetVersion() {
@@ -37,9 +36,8 @@ public abstract class UpdateModule implements Comparable<UpdateModule> {
     /**
      * Whether we should apply the update changes based on the current version
      * versus the target version.
-     * 
-     * @param current
-     *            - Current version.
+     *
+     * @param current - Current version.
      * @return True if the current version is lower than the target version.
      */
     public boolean shouldApplyUpdate(final Version current) {

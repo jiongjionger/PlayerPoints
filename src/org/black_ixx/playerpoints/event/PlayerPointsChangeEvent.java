@@ -1,8 +1,8 @@
 package org.black_ixx.playerpoints.event;
 
-import java.util.UUID;
-
 import org.bukkit.event.HandlerList;
+
+import java.util.UUID;
 
 /**
  * Called when a player's points is to be changed.
@@ -16,11 +16,9 @@ public class PlayerPointsChangeEvent extends PlayerPointsEvent {
 
     /**
      * Constructor.
-     * 
-     * @param name
-     *            - Name of player.
-     * @param change
-     *            - Amount of points to be changed.
+     *
+     * @param name   - Name of player.
+     * @param change - Amount of points to be changed.
      */
     public PlayerPointsChangeEvent(UUID id, int change) {
         super(id, change);
@@ -28,7 +26,7 @@ public class PlayerPointsChangeEvent extends PlayerPointsEvent {
 
     /**
      * Static method to get HandlerList.
-     * 
+     *
      * @return HandlerList.
      */
     public static HandlerList getHandlerList() {

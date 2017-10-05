@@ -2,7 +2,7 @@ package org.black_ixx.playerpoints.config;
 
 /**
  * Configuration nodes for the localization messages config.
- * 
+ *
  * @author Mitsugaru
  */
 public enum LocalizeNode {
@@ -90,11 +90,9 @@ public enum LocalizeNode {
 
     /**
      * Private constructor.
-     * 
-     * @param path
-     *            - Path in config.
-     * @param def
-     *            - Default value to use.
+     *
+     * @param path - Path in config.
+     * @param def  - Default value to use.
      */
     private LocalizeNode(String path, String def) {
         this.path = path;
@@ -103,7 +101,7 @@ public enum LocalizeNode {
 
     /**
      * Get the configuration node path.
-     * 
+     *
      * @return Config path.
      */
     public String getPath() {
@@ -112,7 +110,7 @@ public enum LocalizeNode {
 
     /**
      * Get the default value.
-     * 
+     *
      * @return Default value.
      */
     public String getDefaultValue() {

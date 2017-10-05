@@ -1,21 +1,20 @@
 package org.black_ixx.playerpoints;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
+import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import org.black_ixx.playerpoints.services.IModule;
 import org.black_ixx.playerpoints.storage.StorageHandler;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.ServicePriority;
 
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
-import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Vault economy layer for PlayerPoints.
- * 
+ *
  * @author Mitsugaru
  */
 public class PlayerPointsVaultLayer implements Economy, IModule {
@@ -27,9 +26,8 @@ public class PlayerPointsVaultLayer implements Economy, IModule {
 
     /**
      * Constructor.
-     * 
-     * @param plugin
-     *            - Plugin instance.
+     *
+     * @param plugin - Plugin instance.
      */
     public PlayerPointsVaultLayer(PlayerPoints plugin) {
         this.plugin = plugin;
@@ -73,7 +71,7 @@ public class PlayerPointsVaultLayer implements Economy, IModule {
         StringBuilder sb = new StringBuilder();
         int points = (int) amount;
         sb.append(points + " ");
-        if(points == 1) {
+        if (points == 1) {
             sb.append(currencyNameSingular());
         } else {
             sb.append(currencyNamePlural());
@@ -93,11 +91,11 @@ public class PlayerPointsVaultLayer implements Economy, IModule {
 
     @Override
     public boolean hasAccount(String playerName) {
-    	boolean has = false;
-    	UUID id = handleTranslation(playerName);
-    	if(id != null) {
-    		has = plugin.getModuleForClass(StorageHandler.class).playerEntryExists(id.toString());
-    	}
+        boolean has = false;
+        UUID id = handleTranslation(playerName);
+        if (id != null) {
+            has = plugin.getModuleForClass(StorageHandler.class).playerEntryExists(id.toString());
+        }
         return has;
     }
 
@@ -134,7 +132,7 @@ public class PlayerPointsVaultLayer implements Economy, IModule {
         int balance = plugin.getAPI().look(handleTranslation(playerName));
 
         EconomyResponse response = null;
-        if(result) {
+        if (result) {
             response = new EconomyResponse(amount, balance,
                     ResponseType.SUCCESS, null);
         } else {
@@ -146,7 +144,7 @@ public class PlayerPointsVaultLayer implements Economy, IModule {
 
     @Override
     public EconomyResponse withdrawPlayer(String playerName, String worldName,
-            double amount) {
+                                          double amount) {
         return withdrawPlayer(playerName, amount);
     }
 
@@ -157,7 +155,7 @@ public class PlayerPointsVaultLayer implements Economy, IModule {
         int balance = plugin.getAPI().look(handleTranslation(playerName));
 
         EconomyResponse response = null;
-        if(result) {
+        if (result) {
             response = new EconomyResponse(amount, balance,
                     ResponseType.SUCCESS, null);
         } else {
@@ -169,7 +167,7 @@ public class PlayerPointsVaultLayer implements Economy, IModule {
 
     @Override
     public EconomyResponse depositPlayer(String playerName, String worldName,
-            double amount) {
+                                         double amount) {
         return depositPlayer(playerName, amount);
     }
 
@@ -236,43 +234,43 @@ public class PlayerPointsVaultLayer implements Economy, IModule {
     public boolean createPlayerAccount(String playerName, String worldName) {
         return createPlayerAccount(playerName);
     }
-    
+
     private UUID handleTranslation(String name) {
         UUID id = null;
         try {
             UUID.fromString(name);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             id = plugin.translateNameToUUID(name);
         }
         return id;
     }
 
-	@Override
-	public EconomyResponse createBank(String bank, OfflinePlayer player) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED,
+    @Override
+    public EconomyResponse createBank(String bank, OfflinePlayer player) {
+        return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED,
                 "Does not handle banks.");
-	}
+    }
 
-	@Override
-	public boolean createPlayerAccount(OfflinePlayer player) {
-		// Assume true as the storage handler will dynamically add players.
+    @Override
+    public boolean createPlayerAccount(OfflinePlayer player) {
+        // Assume true as the storage handler will dynamically add players.
         return true;
-	}
+    }
 
-	@Override
-	public boolean createPlayerAccount(OfflinePlayer player, String world) {
-		// Assume true as the storage handler will dynamically add players.
+    @Override
+    public boolean createPlayerAccount(OfflinePlayer player, String world) {
+        // Assume true as the storage handler will dynamically add players.
         return true;
-	}
+    }
 
-	@Override
-	public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
-		int points = (int) amount;
+    @Override
+    public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
+        int points = (int) amount;
         boolean result = plugin.getAPI().give(player.getUniqueId(), points);
         int balance = plugin.getAPI().look(player.getUniqueId());
 
         EconomyResponse response = null;
-        if(result) {
+        if (result) {
             response = new EconomyResponse(amount, balance,
                     ResponseType.SUCCESS, null);
         } else {
@@ -280,65 +278,65 @@ public class PlayerPointsVaultLayer implements Economy, IModule {
                     ResponseType.FAILURE, null);
         }
         return response;
-	}
+    }
 
-	@Override
-	public EconomyResponse depositPlayer(OfflinePlayer player, String world,
-			double amount) {
-		return depositPlayer(player, amount);
-	}
+    @Override
+    public EconomyResponse depositPlayer(OfflinePlayer player, String world,
+                                         double amount) {
+        return depositPlayer(player, amount);
+    }
 
-	@Override
-	public double getBalance(OfflinePlayer player) {
-		return plugin.getAPI().look(player.getUniqueId());
-	}
+    @Override
+    public double getBalance(OfflinePlayer player) {
+        return plugin.getAPI().look(player.getUniqueId());
+    }
 
-	@Override
-	public double getBalance(OfflinePlayer player, String world) {
-		return getBalance(player);
-	}
+    @Override
+    public double getBalance(OfflinePlayer player, String world) {
+        return getBalance(player);
+    }
 
-	@Override
-	public boolean has(OfflinePlayer player, double amount) {
-		int current = plugin.getAPI().look(player.getUniqueId());
+    @Override
+    public boolean has(OfflinePlayer player, double amount) {
+        int current = plugin.getAPI().look(player.getUniqueId());
         return current >= amount;
-	}
+    }
 
-	@Override
-	public boolean has(OfflinePlayer player, String world, double amount) {
-		return has(player, amount);
-	}
+    @Override
+    public boolean has(OfflinePlayer player, String world, double amount) {
+        return has(player, amount);
+    }
 
-	@Override
-	public boolean hasAccount(OfflinePlayer player) {
-		return plugin.getModuleForClass(StorageHandler.class).playerEntryExists(player.getUniqueId().toString());
-	}
+    @Override
+    public boolean hasAccount(OfflinePlayer player) {
+        return plugin.getModuleForClass(StorageHandler.class).playerEntryExists(player.getUniqueId().toString());
+    }
 
-	@Override
-	public boolean hasAccount(OfflinePlayer player, String world) {
-		return hasAccount(player);
-	}
+    @Override
+    public boolean hasAccount(OfflinePlayer player, String world) {
+        return hasAccount(player);
+    }
 
-	@Override
-	public EconomyResponse isBankMember(String bank, OfflinePlayer player) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED,
+    @Override
+    public EconomyResponse isBankMember(String bank, OfflinePlayer player) {
+        return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED,
                 "Does not handle banks.");
-	}
+    }
 
-	@Override
-	public EconomyResponse isBankOwner(String bank, OfflinePlayer player) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED,
+    @Override
+    public EconomyResponse isBankOwner(String bank, OfflinePlayer player) {
+        return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED,
                 "Does not handle banks.");
-	}
+    }
 
-	@Override
-	public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
-		int points = (int) amount;
+    @Override
+    public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
+        int points = (int) amount;
         boolean result = plugin.getAPI().take(player.getUniqueId(), points);
         int balance = plugin.getAPI().look(player.getUniqueId());
 
         EconomyResponse response = null;
-        if(result) {
+        if (result) {
             response = new EconomyResponse(amount, balance,
                     ResponseType.SUCCESS, null);
         } else {
@@ -346,12 +344,12 @@ public class PlayerPointsVaultLayer implements Economy, IModule {
                     ResponseType.FAILURE, "Lack funds");
         }
         return response;
-	}
+    }
 
-	@Override
-	public EconomyResponse withdrawPlayer(OfflinePlayer player, String world,
-			double amount) {
-		return withdrawPlayer(player, amount);
-	}
+    @Override
+    public EconomyResponse withdrawPlayer(OfflinePlayer player, String world,
+                                          double amount) {
+        return withdrawPlayer(player, amount);
+    }
 
 }

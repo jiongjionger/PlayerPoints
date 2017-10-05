@@ -3,9 +3,8 @@ package org.black_ixx.playerpoints.permissions;
 /**
  * Enumeration of permission nodes used through the plugin. Allows for a
  * centralized location and combats typos.
- * 
+ *
  * @author Mitsugaru
- * 
  */
 public enum PermissionNode {
 
@@ -33,9 +32,8 @@ public enum PermissionNode {
 
     /**
      * Private constructor.
-     * 
-     * @param node
-     *            - Specific node.
+     *
+     * @param node - Specific node.
      */
     private PermissionNode(String node) {
         this.node = prefix + node;
@@ -43,7 +41,7 @@ public enum PermissionNode {
 
     /**
      * Get the full permission node path.
-     * 
+     *
      * @return Permission string.
      */
     public String getNode() {

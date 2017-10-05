@@ -1,18 +1,17 @@
 package org.black_ixx.playerpoints.storage.imports;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-
 import lib.PatPeter.SQLibrary.SQLite;
-
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.storage.IStorage;
 import org.black_ixx.playerpoints.storage.StorageType;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 /**
  * Imports from SQLite to MySQL.
- * 
+ *
  * @author Mitsugaru
  */
 public class SQLiteImport extends DatabaseImport {
@@ -24,9 +23,8 @@ public class SQLiteImport extends DatabaseImport {
 
     /**
      * Constructor.
-     * 
-     * @param plugin
-     *            - Plugin instance.
+     *
+     * @param plugin - Plugin instance.
      */
     public SQLiteImport(PlayerPoints plugin) {
         super(plugin);
@@ -43,14 +41,14 @@ public class SQLiteImport extends DatabaseImport {
         ResultSet query = null;
         try {
             query = sqlite.query("SELECT * FROM playerpoints");
-            if(query.next()) {
+            if (query.next()) {
                 do {
                     mysql.setPoints(query.getString("playername"),
                             query.getInt("points"));
-                } while(query.next());
+                } while (query.next());
             }
             query.close();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE,
                     "SQLException on SQLite import", e);
         } finally {

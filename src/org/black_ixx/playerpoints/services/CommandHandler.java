@@ -1,17 +1,13 @@
 package org.black_ixx.playerpoints.services;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.models.Flag;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import java.util.*;
 
 /**
  * Abstract class to handle the majority of the logic dealing with commands.
@@ -38,9 +34,8 @@ public abstract class CommandHandler implements CommandExecutor {
 
     /**
      * Constructor.
-     * 
-     * @param plugin
-     *            - Root plugin.
+     *
+     * @param plugin - Root plugin.
      */
     public CommandHandler(PlayerPoints plugin, String cmd) {
         this.plugin = plugin;
@@ -49,15 +44,13 @@ public abstract class CommandHandler implements CommandExecutor {
 
     /**
      * Register a command with an execution handler.
-     * 
-     * @param label
-     *            - Command to listen for.
-     * @param command
-     *            - Execution handler that will handle the logic behind the
-     *            command.
+     *
+     * @param label   - Command to listen for.
+     * @param command - Execution handler that will handle the logic behind the
+     *                command.
      */
     public void registerCommand(String label, PointsCommand command) {
-        if(registeredCommands.containsKey(label)) {
+        if (registeredCommands.containsKey(label)) {
             plugin.getLogger().warning(
                     "Replacing existing command for: " + label);
         }
@@ -66,9 +59,8 @@ public abstract class CommandHandler implements CommandExecutor {
 
     /**
      * Unregister a command for this handler.
-     * 
-     * @param label
-     *            - Command to stop handling.
+     *
+     * @param label - Command to stop handling.
      */
     public void unregisterCommand(String label) {
         registeredCommands.remove(label);
@@ -76,14 +68,12 @@ public abstract class CommandHandler implements CommandExecutor {
 
     /**
      * Register a subcommand with a command handler.
-     * 
-     * @param label
-     *            - Subcommand to register.
-     * @param handler
-     *            - Command handler.
+     *
+     * @param label   - Subcommand to register.
+     * @param handler - Command handler.
      */
     public void registerHandler(CommandHandler handler) {
-        if(registeredHandlers.containsKey(handler.getCommand())) {
+        if (registeredHandlers.containsKey(handler.getCommand())) {
             plugin.getLogger().warning(
                     "Replacing existing handler for: " + handler.getCommand());
         }
@@ -92,9 +82,8 @@ public abstract class CommandHandler implements CommandExecutor {
 
     /**
      * Unregister a subcommand.
-     * 
-     * @param label
-     *            - Subcommand to remove.
+     *
+     * @param label - Subcommand to remove.
      */
     public void unregisterHandler(String label) {
         registeredHandlers.remove(label);
@@ -106,22 +95,22 @@ public abstract class CommandHandler implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command,
-            String label, String[] args) {
+                             String label, String[] args) {
         EnumMap<Flag, String> info = new EnumMap<Flag, String>(Flag.class);
         info.put(Flag.TAG, PlayerPoints.TAG);
-        if(args.length == 0) {
+        if (args.length == 0) {
             return noArgs(sender, command, label, info);
         } else {
             final String subcmd = args[0].toLowerCase();
             // Check known handlers first and pass to them
             final CommandHandler handler = registeredHandlers.get(subcmd);
-            if(handler != null) {
+            if (handler != null) {
                 return handler.onCommand(sender, command, label,
                         shortenArgs(args));
             }
             // Its our command, so handle it if its registered.
             final PointsCommand subCommand = registeredCommands.get(subcmd);
-            if(subCommand == null) {
+            if (subCommand == null) {
                 return unknownCommand(sender, command, label, args, info);
             }
             // Execute command
@@ -129,7 +118,7 @@ public abstract class CommandHandler implements CommandExecutor {
             try {
                 value = subCommand.execute(plugin, sender, command, label,
                         shortenArgs(args), info);
-            } catch(ArrayIndexOutOfBoundsException e) {
+            } catch (ArrayIndexOutOfBoundsException e) {
                 sender.sendMessage(ChatColor.GRAY + PlayerPoints.TAG
                         + ChatColor.RED + " Missing parameters.");
             }
@@ -140,50 +129,42 @@ public abstract class CommandHandler implements CommandExecutor {
     /**
      * Method that is called on a CommandHandler if there is no additional
      * arguments given that specify a specific command.
-     * 
-     * @param sender
-     *            - Sender of the command.
-     * @param command
-     *            - Command used.
-     * @param label
-     *            - Command label.
+     *
+     * @param sender  - Sender of the command.
+     * @param command - Command used.
+     * @param label   - Command label.
      * @return True if handled. Should not need to return false...
      */
     public abstract boolean noArgs(CommandSender sender, Command command,
-            String label, EnumMap<Flag, String> info);
+                                   String label, EnumMap<Flag, String> info);
 
     /**
      * Allow for the command handler to have special logic for unknown commands.
      * Useful for when expecting a player name parameter on a root command
      * handler command.
-     * 
-     * @param sender
-     *            - Sender of the command.
-     * @param command
-     *            - Command used.
-     * @param label
-     *            - Command label.
-     * @param args
-     *            - Arguments.
+     *
+     * @param sender  - Sender of the command.
+     * @param command - Command used.
+     * @param label   - Command label.
+     * @param args    - Arguments.
      * @return True if handled. Should not need to return false...
      */
     public abstract boolean unknownCommand(CommandSender sender,
-            Command command, String label, String[] args,
-            EnumMap<Flag, String> info);
+                                           Command command, String label, String[] args,
+                                           EnumMap<Flag, String> info);
 
     /**
      * Shortens the given string array by removing the first entry.
-     * 
-     * @param args
-     *            - Array to shorten.
+     *
+     * @param args - Array to shorten.
      * @return Shortened array.
      */
     protected String[] shortenArgs(String[] args) {
-        if(args.length == 0) {
+        if (args.length == 0) {
             return args;
         }
         final List<String> argList = new ArrayList<String>();
-        for(int i = 1; i < args.length; i++) {
+        for (int i = 1; i < args.length; i++) {
             argList.add(args[i]);
         }
         return argList.toArray(new String[0]);
@@ -191,7 +172,7 @@ public abstract class CommandHandler implements CommandExecutor {
 
     /**
      * Get the command for this handler.
-     * 
+     *
      * @return Command
      */
     public String getCommand() {

@@ -1,7 +1,5 @@
 package org.black_ixx.playerpoints.commands;
 
-import java.util.EnumMap;
-
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.config.LocalizeConfig;
 import org.black_ixx.playerpoints.config.LocalizeNode;
@@ -13,17 +11,19 @@ import org.black_ixx.playerpoints.services.PointsCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.util.EnumMap;
+
 public class ReloadCommand implements PointsCommand {
 
     @Override
     public boolean execute(PlayerPoints plugin, CommandSender sender,
-            Command command, String label, String[] args,
-            EnumMap<Flag, String> info) {
-        if(!PermissionHandler.has(sender, PermissionNode.RELOAD)) {
+                           Command command, String label, String[] args,
+                           EnumMap<Flag, String> info) {
+        if (!PermissionHandler.has(sender, PermissionNode.RELOAD)) {
             info.put(Flag.EXTRA, PermissionNode.RELOAD.getNode());
             final String permMessage = LocalizeConfig.parseString(
                     LocalizeNode.PERMISSION_DENY, info);
-            if(!permMessage.isEmpty()) {
+            if (!permMessage.isEmpty()) {
                 sender.sendMessage(permMessage);
             }
             return true;
@@ -31,7 +31,7 @@ public class ReloadCommand implements PointsCommand {
         plugin.getModuleForClass(RootConfig.class).reloadConfig();
         LocalizeConfig.reload();
         final String reloadMessage = LocalizeConfig.parseString(LocalizeNode.RELOAD, info);
-        if(!reloadMessage.isEmpty()) {
+        if (!reloadMessage.isEmpty()) {
             sender.sendMessage(reloadMessage);
         }
         return true;

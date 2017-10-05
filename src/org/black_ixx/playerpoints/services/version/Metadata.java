@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Represents version metadata.
- * 
+ *
  * @author Mitsugaru
  */
 public class Metadata {
@@ -27,22 +27,21 @@ public class Metadata {
 
     /**
      * Constructor.
-     * 
-     * @param meta
-     *            - Raw metadata string.
+     *
+     * @param meta - Raw metadata string.
      */
     public Metadata(final String meta) {
         this.raw = meta;
 
         String[] ids = meta.split("\\.");
-        for(int i = 0; i < ids.length; i++) {
+        for (int i = 0; i < ids.length; i++) {
             metadata.add(ids[i]);
         }
     }
 
     /**
      * Get the list of metadata.
-     * 
+     *
      * @return
      */
     public List<String> getMetadata() {

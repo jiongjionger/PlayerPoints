@@ -8,16 +8,15 @@ import org.black_ixx.playerpoints.update.UpdateModule;
 
 /**
  * Handles the update to 1.52 from previous versions.
- * 
+ *
  * @author Mitsugaru
  */
 public class OneFiveTwoUpdate extends UpdateModule {
 
     /**
      * Constructor.
-     * 
-     * @param plugin
-     *            - plugin instance.
+     *
+     * @param plugin - plugin instance.
      */
     public OneFiveTwoUpdate(PlayerPoints plugin) {
         super(plugin);

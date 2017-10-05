@@ -3,7 +3,7 @@ package org.black_ixx.playerpoints.models;
 /**
  * Holder class that will sort based on the points and by the name. Note, this
  * sorts by order of highest points first and uses player name for any matches.
- * 
+ *
  * @author Mitsugaru
  */
 public class SortedPlayer implements Comparable<SortedPlayer> {
@@ -20,11 +20,9 @@ public class SortedPlayer implements Comparable<SortedPlayer> {
 
     /**
      * Constructor.
-     * 
-     * @param name
-     *            - Player name.
-     * @param points
-     *            - Point amount.
+     *
+     * @param name   - Player name.
+     * @param points - Point amount.
      */
     public SortedPlayer(String name, int points) {
         this.name = name;
@@ -33,7 +31,7 @@ public class SortedPlayer implements Comparable<SortedPlayer> {
 
     /**
      * Get the player name.
-     * 
+     *
      * @return Name of player.
      */
     public String getName() {
@@ -42,7 +40,7 @@ public class SortedPlayer implements Comparable<SortedPlayer> {
 
     /**
      * Get the player points.
-     * 
+     *
      * @return Point amount.
      */
     public int getPoints() {
@@ -51,9 +49,9 @@ public class SortedPlayer implements Comparable<SortedPlayer> {
 
     @Override
     public int compareTo(SortedPlayer o) {
-        if(this.getPoints() > o.getPoints()) {
+        if (this.getPoints() > o.getPoints()) {
             return -1;
-        } else if(this.getPoints() < o.getPoints()) {
+        } else if (this.getPoints() < o.getPoints()) {
             return 1;
         }
         return this.getName().compareTo(o.getName());

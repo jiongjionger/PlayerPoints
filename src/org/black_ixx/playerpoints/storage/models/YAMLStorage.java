@@ -1,55 +1,61 @@
 package org.black_ixx.playerpoints.storage.models;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.logging.Level;
-
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.storage.IStorage;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+
 /**
  * Object that handles points storage from a file config source.
- * 
+ *
  * @author Mitsugaru
  */
 public class YAMLStorage implements IStorage {
-
-    /**
-     * Plugin reference.
-     */
-    private PlayerPoints plugin;
-
-    /**
-     * File reference.
-     */
-    private File file;
-
-    /**
-     * Yaml config.
-     */
-    private YamlConfiguration config;
+    protected static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Points section string.
      */
     private static final String POINTS_SECTION = "Points.";
+    /**
+     * Plugin reference.
+     */
+    private PlayerPoints plugin;
+    /**
+     * File reference.
+     */
+    private File file;
+    /**
+     * Yaml config.
+     */
+    private YamlConfiguration config;
 
+    private File logFile;
     /**
      * Constructor.
-     * 
-     * @param pp
-     *            - Player points plugin instance.
+     *
+     * @param pp - Player points plugin instance.
      */
     public YAMLStorage(PlayerPoints pp) {
         plugin = pp;
         file = new File(plugin.getDataFolder().getAbsolutePath()
                 + "/storage.yml");
         config = YamlConfiguration.loadConfiguration(file);
+        this.logFile = new File(plugin.getDataFolder(),"points.log");
         save();
     }
 
@@ -61,7 +67,7 @@ public class YAMLStorage implements IStorage {
         try {
             // Save the file
             config.save(file);
-        } catch(IOException e1) {
+        } catch (IOException e1) {
             plugin.getLogger().warning(
                     "File I/O Exception on saving storage.yml");
             e1.printStackTrace();
@@ -74,11 +80,11 @@ public class YAMLStorage implements IStorage {
     public void reload() {
         try {
             config.load(file);
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        } catch(InvalidConfigurationException e) {
+        } catch (InvalidConfigurationException e) {
             e.printStackTrace();
         }
     }
@@ -108,19 +114,36 @@ public class YAMLStorage implements IStorage {
     }
 
     @Override
-    public Collection<String> getPlayers() {
-    	Collection<String> players = Collections.emptySet();
-    	
-    	if(config.isConfigurationSection("Points")) {
-    		players = config.getConfigurationSection("Points").getKeys(false);
-    	}
-        return players;
+    public void getPlayers(Consumer<Collection<String>> collectionConsumer) {
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        try {
+            executorService
+                    .execute(() -> {
+                        Collection<String> players = Collections.emptySet();
+
+                        if (config.isConfigurationSection("Points")) {
+                            players = config.getConfigurationSection("Points").getKeys(false);
+                        }
+                        collectionConsumer.accept(players);
+                    });
+        }finally {
+            executorService.shutdown();
+        }
+    }
+
+    @Override
+    public void logPlayerPointsChange(String playerName, CommandSender commandSender, int amount) {
+        try {
+            new FileWriter(logFile,true).write("["+SIMPLE_DATE_FORMAT.format(new Date())+"] "+playerName+" point change amount "+amount+" by "+commandSender.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean destroy() {
         Collection<String> sections = config.getKeys(false);
-        for(String section: sections) {
+        for (String section : sections) {
             config.set(section, null);
         }
         return true;
@@ -131,7 +154,8 @@ public class YAMLStorage implements IStorage {
         boolean success = false;
         try {
             success = file.createNewFile();
-        } catch(IOException e) {
+            success = logFile.createNewFile();
+        } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to create storage file!", e);
         }
         return success;

@@ -7,7 +7,7 @@ import org.black_ixx.playerpoints.storage.models.YAMLStorage;
 
 /**
  * Genereates the storage handler for any given type.
- * 
+ *
  * @author Mitsugaru.
  */
 public class StorageGenerator {
@@ -19,9 +19,8 @@ public class StorageGenerator {
 
     /**
      * Constructor.
-     * 
-     * @param plugin
-     *            - Plugin instance.
+     *
+     * @param plugin - Plugin instance.
      */
     public StorageGenerator(PlayerPoints plugin) {
         this.plugin = plugin;
@@ -29,25 +28,24 @@ public class StorageGenerator {
 
     /**
      * Genereate a storage handler for the given type.
-     * 
-     * @param type
-     *            - Storage type.
+     *
+     * @param type - Storage type.
      * @return Storage handler. Returns null for unhandled storage types.
      */
     public IStorage createStorageHandlerForType(StorageType type) {
         IStorage storage = null;
-        switch(type) {
-        case YAML:
-            storage = new YAMLStorage(plugin);
-            break;
-        case SQLITE:
-            storage = new SQLiteStorage(plugin);
-            break;
-        case MYSQL:
-            storage = new MySQLStorage(plugin);
-            break;
-        default:
-            break;
+        switch (type) {
+            case YAML:
+                storage = new YAMLStorage(plugin);
+                break;
+            case SQLITE:
+                storage = new SQLiteStorage(plugin);
+                break;
+            case MYSQL:
+                storage = new MySQLStorage(plugin);
+                break;
+            default:
+                break;
         }
         return storage;
     }

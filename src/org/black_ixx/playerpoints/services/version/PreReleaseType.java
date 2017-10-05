@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Represents pre-release version types.
- * 
+ *
  * @author Mitsugaru
  */
 public class PreReleaseType implements Comparable<PreReleaseType> {
@@ -19,33 +19,30 @@ public class PreReleaseType implements Comparable<PreReleaseType> {
      * Normal string found in version.
      */
     private final String type;
-
+    /**
+     * List of identifiers after the base type.
+     */
+    private final List<String> identifiers = new ArrayList<String>();
     /**
      * Base pre-release type.
      */
     private String base;
 
     /**
-     * List of identifiers after the base type.
-     */
-    private final List<String> identifiers = new ArrayList<String>();
-
-    /**
      * Private constructor.
-     * 
-     * @param in
-     *            - Type's normal string.
+     *
+     * @param in - Type's normal string.
      */
     public PreReleaseType(final String in) {
         this.type = in;
         try {
             this.base = in.substring(0, in.indexOf("."));
-        } catch(IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             this.base = in;
         }
 
         String[] ids = in.split("\\.");
-        for(int i = 1; i < ids.length; i++) {
+        for (int i = 1; i < ids.length; i++) {
             identifiers.add(ids[i]);
         }
     }
@@ -75,24 +72,24 @@ public class PreReleaseType implements Comparable<PreReleaseType> {
         int compare = o.getType().toLowerCase().compareTo(type.toLowerCase());
 
         // Compare identifiers if matching base types
-        if(compare == 0) {
+        if (compare == 0) {
             int max = Math.max(identifiers.size(), o.getIdentifiers().size());
-            for(int i = 0; i < max; i++) {
+            for (int i = 0; i < max; i++) {
                 String ours = "";
                 try {
                     ours = identifiers.get(i);
-                } catch(IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     compare = 1;
                     break;
                 }
                 String theirs = "";
                 try {
                     theirs = o.getIdentifiers().get(i);
-                } catch(IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     compare = -1;
                     break;
                 }
-                if(theirs.compareTo(ours) != 0) {
+                if (theirs.compareTo(ours) != 0) {
                     compare = theirs.compareTo(ours);
                     break;
                 }
@@ -109,7 +106,7 @@ public class PreReleaseType implements Comparable<PreReleaseType> {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof PreReleaseType) {
+        if (obj instanceof PreReleaseType) {
             return type.equals(((PreReleaseType) obj).getType());
         }
         return false;

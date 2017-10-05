@@ -1,14 +1,6 @@
 package org.black_ixx.playerpoints;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Level;
-
+import com.evilmidget38.UUIDFetcher;
 import org.black_ixx.playerpoints.commands.Commander;
 import org.black_ixx.playerpoints.config.LocalizeConfig;
 import org.black_ixx.playerpoints.config.RootConfig;
@@ -25,7 +17,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.evilmidget38.UUIDFetcher;
+import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Main plugin class for PlayerPoints.
@@ -36,16 +29,14 @@ public class PlayerPoints extends JavaPlugin {
      * Plugin tag.
      */
     public static final String TAG = "[PlayerPoints]";
-
-    /**
-     * API instance.
-     */
-    private PlayerPointsAPI api;
-
     /**
      * Modules.
      */
     private final Map<Class<? extends IModule>, IModule> modules = new HashMap<Class<? extends IModule>, IModule>();
+    /**
+     * API instance.
+     */
+    private PlayerPointsAPI api;
 
     @Override
     public void onEnable() {
@@ -69,24 +60,24 @@ public class PlayerPoints extends JavaPlugin {
         update.checkUpdate();
         // Register commands
         final Commander commander = new Commander(this);
-        if(getDescription().getCommands().containsKey("points")) {
+        if (getDescription().getCommands().containsKey("points")) {
             getCommand("points").setExecutor(commander);
         }
-        if(getDescription().getCommands().containsKey("p")) {
+        if (getDescription().getCommands().containsKey("p")) {
             getCommand("p").setExecutor(commander);
         }
         final PluginManager pm = getServer().getPluginManager();
         // Register votifier listener, if applicable
-        if(rootConfig.voteEnabled) {
+        if (rootConfig.voteEnabled) {
             final Plugin votifier = pm.getPlugin("Votifier");
-            if(votifier != null) {
+            if (votifier != null) {
                 pm.registerEvents(new VotifierListener(this), this);
             } else {
                 getLogger().warning("Could not hook into Votifier!");
             }
         }
         // Vault module
-        if(rootConfig.vault) {
+        if (rootConfig.vault) {
             registerModule(PlayerPointsVaultLayer.class,
                     new PlayerPointsVaultLayer(this));
         }
@@ -99,14 +90,14 @@ public class PlayerPoints extends JavaPlugin {
         // Deregister all modules.
         List<Class<? extends IModule>> clazzez = new ArrayList<Class<? extends IModule>>();
         clazzez.addAll(modules.keySet());
-        for(Class<? extends IModule> clazz : clazzez) {
+        for (Class<? extends IModule> clazz : clazzez) {
             this.deregisterModuleForClass(clazz);
         }
     }
 
     /**
      * Get the plugin's API.
-     * 
+     *
      * @return API instance.
      */
     public PlayerPointsAPI getAPI() {
@@ -115,21 +106,18 @@ public class PlayerPoints extends JavaPlugin {
 
     /**
      * Register a module to the API.
-     * 
-     * @param clazz
-     *            - Class of the instance.
-     * @param module
-     *            - Module instance.
-     * @throws IllegalArgumentException
-     *             - Thrown if an argument is null.
+     *
+     * @param clazz  - Class of the instance.
+     * @param module - Module instance.
+     * @throws IllegalArgumentException - Thrown if an argument is null.
      */
     public <T extends IModule> void registerModule(Class<T> clazz, T module) {
         // Check arguments.
-        if(clazz == null) {
+        if (clazz == null) {
             throw new IllegalArgumentException("Class cannot be null");
-        } else if(module == null) {
+        } else if (module == null) {
             throw new IllegalArgumentException("Module cannot be null");
-        } else if(modules.containsKey(clazz)) {
+        } else if (modules.containsKey(clazz)) {
             this.getLogger().warning(
                     "Overwriting module for class: " + clazz.getName());
         }
@@ -141,20 +129,19 @@ public class PlayerPoints extends JavaPlugin {
 
     /**
      * Unregister a module from the API.
-     * 
-     * @param clazz
-     *            - Class of the instance.
+     *
+     * @param clazz - Class of the instance.
      * @return Module that was removed from the API. Returns null if no instance
-     *         of the module is registered with the API.
+     * of the module is registered with the API.
      */
     public <T extends IModule> T deregisterModuleForClass(Class<T> clazz) {
         // Check arguments.
-        if(clazz == null) {
+        if (clazz == null) {
             throw new IllegalArgumentException("Class cannot be null");
         }
         // Grab module and tell it its closing.
         T module = clazz.cast(modules.get(clazz));
-        if(module != null) {
+        if (module != null) {
             module.closing();
         }
         return module;
@@ -162,11 +149,10 @@ public class PlayerPoints extends JavaPlugin {
 
     /**
      * Retrieve a registered CCModule.
-     * 
-     * @param clazz
-     *            - Class identifier.
+     *
+     * @param clazz - Class identifier.
      * @return Module instance. Returns null is an instance of the given class
-     *         has not been registered with the API.
+     * has not been registered with the API.
      */
     public <T extends IModule> T getModuleForClass(Class<T> clazz) {
         return clazz.cast(modules.get(clazz));
@@ -175,92 +161,93 @@ public class PlayerPoints extends JavaPlugin {
     /**
      * Attempts to look up full name based on who's on the server Given a
      * partial name
-     * 
+     *
      * @author Frigid, edited by Raphfrk and petteyg359
      */
     public String expandName(String name) {
         int m = 0;
         String Result = "";
         final Collection<? extends Player> online = getServer().getOnlinePlayers();
-        for(Player player : online) {
+        for (Player player : online) {
             String str = player.getName();
-            if(str.matches("(?i).*" + name + ".*")) {
+            if (str.matches("(?i).*" + name + ".*")) {
                 m++;
                 Result = str;
-                if(m == 2) {
+                if (m == 2) {
                     return null;
                 }
             }
-            if(str.equalsIgnoreCase(name)) {
+            if (str.equalsIgnoreCase(name)) {
                 return str;
             }
         }
-        if(m == 1)
+        if (m == 1)
             return Result;
-        if(m > 1) {
+        if (m > 1) {
             return null;
         }
         return name;
     }
-    
+
     /**
      * Attempt to translate a player name into a UUID.
+     *
      * @param name - Player name.
      * @return Player UUID. Null if no match found.
      */
     public UUID translateNameToUUID(String name) {
         UUID id = null;
         RootConfig config = getModuleForClass(RootConfig.class);
-        if(config.debugUUID) {
-        	getLogger().info("translateNameToUUID(" + name + ")");
+        if (config.debugUUID) {
+            getLogger().info("translateNameToUUID(" + name + ")");
         }
 
-        if(name == null) {
-        	if(config.debugUUID) {
-            	getLogger().info("translateNameToUUID() - bad ID");
+        if (name == null) {
+            if (config.debugUUID) {
+                getLogger().info("translateNameToUUID() - bad ID");
             }
-        	return id;
+            return id;
         }
 
         // Look through online players first
-        if(config.debugUUID) {
-        	getLogger().info("translateNameToUUID() - Looking through online players: " + Bukkit.getServer().getOnlinePlayers().size());
+        if (config.debugUUID) {
+            getLogger().info("translateNameToUUID() - Looking through online players: " + Bukkit.getServer().getOnlinePlayers().size());
         }
         Collection<? extends Player> players = Bukkit.getServer().getOnlinePlayers();
-        for(Player p : players) {
-            if(p.getName().equalsIgnoreCase(name)) {
+        for (Player p : players) {
+            if (p.getName().equalsIgnoreCase(name)) {
                 id = p.getUniqueId();
-                if(config.debugUUID) {
-                	getLogger().info("translateNameToUUID() online player UUID found: " + id.toString());
+                if (config.debugUUID) {
+                    getLogger().info("translateNameToUUID() online player UUID found: " + id.toString());
                 }
                 break;
             }
         }
 
         // Last resort, attempt bukkit api lookup
-        if(id == null && Bukkit.getServer().getOnlineMode()) {
-        	if(config.debugUUID) {
-            	getLogger().info("translateNameToUUID() - Attempting online lookup");
+        if (id == null && Bukkit.getServer().getOnlineMode()) {
+            if (config.debugUUID) {
+                getLogger().info("translateNameToUUID() - Attempting online lookup");
             }
-        	UUIDFetcher fetcher = new UUIDFetcher(Arrays.asList(name));
-        	try {
-				Map<String, UUID> map = fetcher.call();
-				for(Map.Entry<String, UUID> entry : map.entrySet()) {
-					if(name.equalsIgnoreCase(entry.getKey())) {
-						id = entry.getValue();
-						if(config.debugUUID) {
-							getLogger().info("translateNameToUUID() web player UUID found: " + ((id == null) ? id : id.toString()));
-						}
-						break;
-					}
-				}
-			} catch (Exception e) {
-				getLogger().log(Level.SEVERE, "Exception on online UUID fetch", e);
-			}
-        } else if(id == null && !Bukkit.getServer().getOnlineMode()) {
+            UUIDFetcher fetcher = new UUIDFetcher(Arrays.asList(name));
+            try {
+                Map<String, UUID> map = fetcher.call();
+                for (Map.Entry<String, UUID> entry : map.entrySet()) {
+                    if (name.equalsIgnoreCase(entry.getKey())) {
+                        id = entry.getValue();
+                        if (config.debugUUID) {
+                            getLogger().info("translateNameToUUID() web player UUID found: " + ((id == null) ? id : id.toString()));
+                        }
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                getLogger().log(Level.SEVERE, "Exception on online UUID fetch", e);
+            }
+        } else if (id == null && !Bukkit.getServer().getOnlineMode()) {
             //There's nothing we can do but attempt to get the UUID from old method.
             id = Bukkit.getServer().getOfflinePlayer(name).getUniqueId();
-            if(config.debugUUID) {
+            if (config.debugUUID) {
                 getLogger().info("translateNameToUUID() offline player UUID found: " + ((id == null) ? id : id.toString()));
             }
         }

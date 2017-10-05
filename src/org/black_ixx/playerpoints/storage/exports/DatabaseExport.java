@@ -5,7 +5,7 @@ import org.black_ixx.playerpoints.storage.StorageGenerator;
 
 /**
  * Handles database exporting.
- * 
+ *
  * @author Mitsugaru
  */
 public abstract class DatabaseExport {
@@ -21,9 +21,8 @@ public abstract class DatabaseExport {
 
     /**
      * Constructor.
-     * 
-     * @param plugin
-     *            - Plugin instance.
+     *
+     * @param plugin - Plugin instance.
      */
     public DatabaseExport(PlayerPoints plugin) {
         this.plugin = plugin;

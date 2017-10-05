@@ -2,7 +2,7 @@ package org.black_ixx.playerpoints.models;
 
 /**
  * Variable flags.
- * 
+ *
  * @author Mitsugaru
  */
 public enum Flag {
@@ -19,9 +19,8 @@ public enum Flag {
 
     /**
      * Private constructor.
-     * 
-     * @param flag
-     *            - Field to use.
+     *
+     * @param flag - Field to use.
      */
     private Flag(String flag) {
         this.flag = flag;
@@ -29,7 +28,7 @@ public enum Flag {
 
     /**
      * Get the flag.
-     * 
+     *
      * @return Flag.
      */
     public String getFlag() {

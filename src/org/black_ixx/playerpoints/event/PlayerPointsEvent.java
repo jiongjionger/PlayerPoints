@@ -1,10 +1,10 @@
 package org.black_ixx.playerpoints.event;
 
-import java.util.UUID;
-
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import java.util.UUID;
 
 public class PlayerPointsEvent extends Event implements Cancellable {
     /**
@@ -28,11 +28,9 @@ public class PlayerPointsEvent extends Event implements Cancellable {
 
     /**
      * Constructor.
-     * 
-     * @param id
-     *            - Id of player.
-     * @param change
-     *            - Amount of change that will apply to their current balance.
+     *
+     * @param id     - Id of player.
+     * @param change - Amount of change that will apply to their current balance.
      */
     public PlayerPointsEvent(UUID id, int change) {
         this.playerId = id;
@@ -40,8 +38,17 @@ public class PlayerPointsEvent extends Event implements Cancellable {
     }
 
     /**
+     * Static method to get HandlerList.
+     *
+     * @return HandlerList.
+     */
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    /**
      * Get the amount of points that the player's balance will change by.
-     * 
+     *
      * @return Amount of change.
      */
     public int getChange() {
@@ -51,9 +58,8 @@ public class PlayerPointsEvent extends Event implements Cancellable {
     /**
      * Set the amount of change that will be used to adjust the player's
      * balance.
-     * 
-     * @param change
-     *            - Amount of change.
+     *
+     * @param change - Amount of change.
      */
     public void setChange(int change) {
         this.change = change;
@@ -61,7 +67,7 @@ public class PlayerPointsEvent extends Event implements Cancellable {
 
     /**
      * Get the player id.
-     * 
+     *
      * @return Player UUID.
      */
     public UUID getPlayerId() {
@@ -76,15 +82,6 @@ public class PlayerPointsEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
-    }
-
-    /**
-     * Static method to get HandlerList.
-     * 
-     * @return HandlerList.
-     */
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 
     @Override
