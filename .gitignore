@@ -4,3 +4,16 @@
 /target
 *.eml
 *.iml
+### Ignore template
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+#maven
+target/*
+
+#gradle
+build
+.gradle
