@@ -8,7 +8,9 @@ import org.bukkit.command.CommandSender;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -168,7 +170,7 @@ public class SQLiteStorage extends DatabaseStorage {
                         }
                         collectionConsumer.accept(players);
                     });
-        }finally {
+        } finally {
             executorService.shutdown();
         }
     }

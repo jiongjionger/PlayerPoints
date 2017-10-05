@@ -5,7 +5,6 @@ import org.black_ixx.playerpoints.services.version.Version;
 import org.black_ixx.playerpoints.storage.StorageHandler;
 import org.black_ixx.playerpoints.update.UpdateModule;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +22,7 @@ public class TwoZeroZeroUpdate extends UpdateModule {
     public void update() {
         // Translate player names to UUID
         StorageHandler storageHandler = plugin.getModuleForClass(StorageHandler.class);
-        storageHandler.getPlayers(playerNames->{
+        storageHandler.getPlayers(playerNames -> {
             for (String playerName : playerNames) {
                 cache.put(playerName, storageHandler.getPoints(playerName));
             }

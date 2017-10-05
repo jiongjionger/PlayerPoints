@@ -1,19 +1,9 @@
 package org.black_ixx.playerpoints.commands;
 
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.config.LocalizeConfig;
 import org.black_ixx.playerpoints.config.LocalizeNode;
 import org.black_ixx.playerpoints.models.Flag;
-import org.black_ixx.playerpoints.models.SortedPlayer;
 import org.black_ixx.playerpoints.permissions.PermissionHandler;
 import org.black_ixx.playerpoints.permissions.PermissionNode;
 import org.black_ixx.playerpoints.services.CommandHandler;
@@ -22,6 +12,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Handles the leader board commands.
@@ -38,7 +33,7 @@ public class LeadCommand extends CommandHandler {
     /**
      * Current page the player is viewing.
      */
-    private final Map<String, Integer> page = new HashMap<String, Integer>();
+    private final Map<String, Integer> page = new HashMap<>();
 
     /**
      * Constructor.
@@ -62,55 +57,20 @@ public class LeadCommand extends CommandHandler {
             }
             return true;
         }
-
         plugin.getModuleForClass(StorageHandler.class).getPlayers(strings -> {
-            long l = System.currentTimeMillis();
-            SortedSet<SortedPlayer> leaders = sortLeaders(plugin, strings);
-            System.out.println("耗时 " + (System.currentTimeMillis() - l) + " ms");
-            int current = 0;
-            if (page.containsKey(sender.getName())) {
-                current = page.get(sender.getName());
+            Integer pageCurrent = page.getOrDefault(sender.getName(), 1);
+            if (pageCurrent < 1) {
+                pageCurrent = 1;
             }
-
-            int num = leaders.size() / LIMIT;
-            double rem = (double) leaders.size() % (double) LIMIT;
-            if (rem != 0) {
-                num++;
-            }
-
-            // Bounds check
-            if (current < 0) {
-                current = 0;
-                page.put(sender.getName(), current);
-            } else if (current >= num) {
-                current = num - 1;
-                page.put(sender.getName(), current);
-            }
-
-            SortedPlayer[] array = leaders.toArray(new SortedPlayer[0]);
-
-            if (leaders.isEmpty()) {
-                current = 0;
-                num = 0;
-            }
-
-            // Header
             sender.sendMessage(ChatColor.BLUE + "=== " + ChatColor.GRAY
-                    + PlayerPoints.TAG + " Leader Board " + ChatColor.BLUE + "=== "
-                    + ChatColor.GRAY + (current + 1) + ":" + num);
-
-            // Page through
-            for (int i = current * LIMIT; i < (current * LIMIT + LIMIT); i++) {
-                if (i >= array.length) {
-                    break;
-                }
-                SortedPlayer player = array[i];
-                sender.sendMessage(ChatColor.AQUA + "" + (i + 1) + ". "
-                        + ChatColor.GRAY + Bukkit.getOfflinePlayer(UUID.fromString(player.getName())).getName() + ChatColor.WHITE
-                        + " - " + ChatColor.GOLD + player.getPoints());
-            }
+                    + PlayerPoints.TAG + " Points Leaders " + ChatColor.BLUE + "=== "
+                    + ChatColor.GRAY + pageCurrent + ":" + strings.size());
+            strings.subList((pageCurrent - 1) * 10, pageCurrent * 10).forEach(string -> {
+                sender.sendMessage(ChatColor.AQUA + "" + (strings.indexOf(string) + 1) + ". "
+                        + ChatColor.GRAY + Bukkit.getOfflinePlayer(UUID.fromString(string)).getName() + ChatColor.WHITE
+                        + " - " + ChatColor.GOLD + plugin.getAPI().look(UUID.fromString(string)));
+            });
         });
-
         return true;
     }
 
@@ -153,20 +113,6 @@ public class LeadCommand extends CommandHandler {
         }
 
         return true;
-    }
-
-    /**
-     * Sorts the given players by their point value and name.
-     *
-     * @param plugin  - Plugin instance.
-     * @param players - All player names in storage.
-     * @return Set of sorted players.
-     */
-    private SortedSet<SortedPlayer> sortLeaders(PlayerPoints plugin,
-                                                Collection<String> players) {
-        SortedSet<SortedPlayer> sorted = new TreeSet<>();
-        sorted.addAll(players.stream().map(string -> new SortedPlayer(string,plugin.getAPI().look(UUID.fromString(string)))).collect(Collectors.toList()));
-        return sorted;
     }
 
 }

@@ -69,7 +69,6 @@ public abstract class CommandHandler implements CommandExecutor {
     /**
      * Register a subcommand with a command handler.
      *
-     * @param label   - Subcommand to register.
      * @param handler - Command handler.
      */
     public void registerHandler(CommandHandler handler) {
@@ -96,7 +95,7 @@ public abstract class CommandHandler implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command,
                              String label, String[] args) {
-        EnumMap<Flag, String> info = new EnumMap<Flag, String>(Flag.class);
+        EnumMap<Flag, String> info = new EnumMap<>(Flag.class);
         info.put(Flag.TAG, PlayerPoints.TAG);
         if (args.length == 0) {
             return noArgs(sender, command, label, info);

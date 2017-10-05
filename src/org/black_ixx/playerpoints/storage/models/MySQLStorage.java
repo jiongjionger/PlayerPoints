@@ -4,14 +4,15 @@ import lib.PatPeter.SQLibrary.MySQL;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.config.RootConfig;
 import org.black_ixx.playerpoints.storage.DatabaseStorage;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -268,7 +269,7 @@ public class MySQLStorage extends DatabaseStorage {
                 }
                 collectionConsumer.accept(players);
             });
-        }finally {
+        } finally {
             executorService.shutdown();
         }
     }

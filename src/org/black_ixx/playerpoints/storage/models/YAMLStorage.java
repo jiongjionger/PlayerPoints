@@ -11,7 +11,10 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -43,6 +46,7 @@ public class YAMLStorage implements IStorage {
     private YamlConfiguration config;
 
     private File logFile;
+
     /**
      * Constructor.
      *
@@ -53,7 +57,7 @@ public class YAMLStorage implements IStorage {
         file = new File(plugin.getDataFolder().getAbsolutePath()
                 + "/storage.yml");
         config = YamlConfiguration.loadConfiguration(file);
-        this.logFile = new File(plugin.getDataFolder(),"points.log");
+        this.logFile = new File(plugin.getDataFolder(), "points.log");
         save();
     }
 
@@ -124,7 +128,7 @@ public class YAMLStorage implements IStorage {
                         }
                         collectionConsumer.accept(players);
                     });
-        }finally {
+        } finally {
             executorService.shutdown();
         }
     }
@@ -132,7 +136,7 @@ public class YAMLStorage implements IStorage {
     @Override
     public void logPlayerPointsChange(String playerName, CommandSender commandSender, int amount) {
         try {
-            new FileWriter(logFile,true).write("["+SIMPLE_DATE_FORMAT.format(new Date())+"] "+playerName+" point change amount "+amount+" by "+commandSender.getName());
+            new FileWriter(logFile, true).write("[" + SIMPLE_DATE_FORMAT.format(new Date()) + "] " + playerName + " point change amount " + amount + " by " + commandSender.getName());
         } catch (IOException e) {
             e.printStackTrace();
         }

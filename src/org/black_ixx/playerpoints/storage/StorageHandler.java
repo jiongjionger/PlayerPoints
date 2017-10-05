@@ -5,7 +5,6 @@ import org.black_ixx.playerpoints.config.RootConfig;
 import org.black_ixx.playerpoints.services.IModule;
 import org.bukkit.command.CommandSender;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 

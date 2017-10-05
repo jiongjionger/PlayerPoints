@@ -15,11 +15,11 @@ import java.util.concurrent.TimeUnit;
  * API hook.
  */
 public class PlayerPointsAPI {
-    private LoadingCache<UUID,Integer> playerPointsCache;
     /**
      * Plugin instance.
      */
     private final PlayerPoints plugin;
+    private LoadingCache<UUID, Integer> playerPointsCache;
 
     /**
      * Constructor
@@ -31,7 +31,7 @@ public class PlayerPointsAPI {
         this.playerPointsCache = CacheBuilder
                 .newBuilder()
                 .expireAfterWrite(60, TimeUnit.SECONDS)
-                .expireAfterAccess(10,TimeUnit.SECONDS)
+                .expireAfterAccess(10, TimeUnit.SECONDS)
                 .maximumSize(1000)
                 .build(new CacheLoader<UUID, Integer>() {
                     @Override
