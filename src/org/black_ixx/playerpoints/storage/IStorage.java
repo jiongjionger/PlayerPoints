@@ -3,6 +3,7 @@ package org.black_ixx.playerpoints.storage;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -64,7 +65,7 @@ public interface IStorage {
      *
      * @return Collection of player IDs.
      */
-    void getPlayers(Consumer<Collection<String>> collectionConsumer);
+    void getPlayers(Consumer<List<String>> collectionConsumer);
 
     void logPlayerPointsChange(String playerName, CommandSender commandSender, int amount);
 }

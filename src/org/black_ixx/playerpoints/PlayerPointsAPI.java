@@ -1,15 +1,21 @@
 package org.black_ixx.playerpoints;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.black_ixx.playerpoints.event.PlayerPointsChangeEvent;
 import org.black_ixx.playerpoints.event.PlayerPointsResetEvent;
 import org.black_ixx.playerpoints.storage.StorageHandler;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * API hook.
  */
 public class PlayerPointsAPI {
+    private LoadingCache<UUID,Integer> playerPointsCache;
     /**
      * Plugin instance.
      */
@@ -22,6 +28,17 @@ public class PlayerPointsAPI {
      */
     public PlayerPointsAPI(PlayerPoints p) {
         this.plugin = p;
+        this.playerPointsCache = CacheBuilder
+                .newBuilder()
+                .expireAfterWrite(60, TimeUnit.SECONDS)
+                .expireAfterAccess(10,TimeUnit.SECONDS)
+                .maximumSize(1000)
+                .build(new CacheLoader<UUID, Integer>() {
+                    @Override
+                    public Integer load(UUID key) throws Exception {
+                        return plugin.getModuleForClass(StorageHandler.class).getPoints(key.toString());
+                    }
+                });
     }
 
     /**
@@ -61,7 +78,7 @@ public class PlayerPointsAPI {
      * negative, we make it negative.
      *
      * @param playerId UUID of player
-     * @param Amount   of points to give
+     * @param amount   of points to give
      * @return True if we successfully adjusted points, else false
      */
     public boolean take(UUID playerId, int amount) {
@@ -93,11 +110,12 @@ public class PlayerPointsAPI {
      * @return Points that the player has
      */
     public int look(UUID playerId) {
-        int amount = 0;
-        if (playerId != null) {
-            amount = plugin.getModuleForClass(StorageHandler.class).getPoints(playerId.toString());
+        try {
+            return playerPointsCache.get(playerId);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return 0;
         }
-        return amount;
     }
 
     @Deprecated
@@ -137,7 +155,7 @@ public class PlayerPointsAPI {
      * Sets a player's points to a given value.
      *
      * @param playerId UUID of player
-     * @param Amount   of points that it should be set to
+     * @param amount   of points that it should be set to
      * @return True if successful
      */
     public boolean set(UUID playerId, int amount) {
@@ -167,7 +185,7 @@ public class PlayerPointsAPI {
     /**
      * Reset a player's points by removing their entry from the config.
      *
-     * @param Name of player
+     * @param playerId of player
      * @return True if successful
      */
     public boolean reset(UUID playerId) {

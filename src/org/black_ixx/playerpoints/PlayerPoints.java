@@ -229,7 +229,7 @@ public class PlayerPoints extends JavaPlugin {
             if (config.debugUUID) {
                 getLogger().info("translateNameToUUID() - Attempting online lookup");
             }
-            UUIDFetcher fetcher = new UUIDFetcher(Arrays.asList(name));
+            UUIDFetcher fetcher = new UUIDFetcher(Collections.singletonList(name));
             try {
                 Map<String, UUID> map = fetcher.call();
                 for (Map.Entry<String, UUID> entry : map.entrySet()) {

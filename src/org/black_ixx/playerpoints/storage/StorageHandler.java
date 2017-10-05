@@ -6,6 +6,7 @@ import org.black_ixx.playerpoints.services.IModule;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -83,7 +84,7 @@ public class StorageHandler implements IStorage, IModule {
     }
 
     @Override
-    public void getPlayers(Consumer<Collection<String>> collectionConsumer) {
+    public void getPlayers(Consumer<List<String>> collectionConsumer) {
         this.storage.getPlayers(collectionConsumer);
     }
 

@@ -1,5 +1,14 @@
 package org.black_ixx.playerpoints.commands;
 
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.config.LocalizeConfig;
 import org.black_ixx.playerpoints.config.LocalizeNode;
@@ -13,8 +22,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-
-import java.util.*;
 
 /**
  * Handles the leader board commands.
@@ -57,7 +64,9 @@ public class LeadCommand extends CommandHandler {
         }
 
         plugin.getModuleForClass(StorageHandler.class).getPlayers(strings -> {
+            long l = System.currentTimeMillis();
             SortedSet<SortedPlayer> leaders = sortLeaders(plugin, strings);
+            System.out.println("耗时 " + (System.currentTimeMillis() - l) + " ms");
             int current = 0;
             if (page.containsKey(sender.getName())) {
                 current = page.get(sender.getName());
@@ -155,13 +164,8 @@ public class LeadCommand extends CommandHandler {
      */
     private SortedSet<SortedPlayer> sortLeaders(PlayerPoints plugin,
                                                 Collection<String> players) {
-        SortedSet<SortedPlayer> sorted = new TreeSet<SortedPlayer>();
-
-        for (String name : players) {
-            int points = plugin.getAPI().look(UUID.fromString(name));
-            sorted.add(new SortedPlayer(name, points));
-        }
-
+        SortedSet<SortedPlayer> sorted = new TreeSet<>();
+        sorted.addAll(players.stream().map(string -> new SortedPlayer(string,plugin.getAPI().look(UUID.fromString(string)))).collect(Collectors.toList()));
         return sorted;
     }
 

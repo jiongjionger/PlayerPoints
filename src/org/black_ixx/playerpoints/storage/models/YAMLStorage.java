@@ -11,9 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -114,15 +112,15 @@ public class YAMLStorage implements IStorage {
     }
 
     @Override
-    public void getPlayers(Consumer<Collection<String>> collectionConsumer) {
+    public void getPlayers(Consumer<List<String>> collectionConsumer) {
         ExecutorService executorService = Executors.newCachedThreadPool();
         try {
             executorService
                     .execute(() -> {
-                        Collection<String> players = Collections.emptySet();
+                        List<String> players = new ArrayList<>();
 
                         if (config.isConfigurationSection("Points")) {
-                            players = config.getConfigurationSection("Points").getKeys(false);
+                            players.addAll(config.getConfigurationSection("Points").getKeys(false));
                         }
                         collectionConsumer.accept(players);
                     });

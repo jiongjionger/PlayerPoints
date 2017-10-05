@@ -11,9 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -25,6 +23,7 @@ import java.util.logging.Level;
  * @author Mitsugaru
  */
 public class MySQLStorage extends DatabaseStorage {
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * MYSQL reference.
@@ -229,11 +228,11 @@ public class MySQLStorage extends DatabaseStorage {
     }
 
     @Override
-    public void getPlayers(Consumer<Collection<String>> collectionConsumer) {
+    public void getPlayers(Consumer<List<String>> collectionConsumer) {
         ExecutorService executorService = Executors.newCachedThreadPool();
         try {
             executorService.execute(() -> {
-                Collection<String> players = new HashSet<String>();
+                List<String> players = new ArrayList<>();
 
                 RootConfig config = plugin.getModuleForClass(RootConfig.class);
                 if (config.debugDatabase) {
@@ -302,6 +301,7 @@ public class MySQLStorage extends DatabaseStorage {
         }
         if (retryCount < retryLimit) {
             mysql.open();
+
         } else {
             plugin.getLogger().severe(
                     "Tried connecting to MySQL " + retryLimit
@@ -338,12 +338,6 @@ public class MySQLStorage extends DatabaseStorage {
             plugin.getLogger().info(String.format("Creating %s table", tableName));
         }
         try {
-            mysql.query("CREATE TABLE IF NOT EXISTS " + config.database + ".playerpoints_log (\n" +
-                    "  `player` varchar(255) NOT NULL DEFAULT '',\n" +
-                    "  `date` varchar(255) NOT NULL DEFAULT 0,\n" +
-                    "  `amount` int(11) NOT NULL DEFAULT 0,\n" +
-                    "  `executor` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT ''\n" +
-                    ") DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
             mysql.query(String.format("CREATE TABLE %s (id INT UNSIGNED NOT NULL AUTO_INCREMENT, playername varchar(36) NOT NULL, points INT NOT NULL, PRIMARY KEY(id), UNIQUE(playername));", tableName));
             success = true;
         } catch (SQLException e) {

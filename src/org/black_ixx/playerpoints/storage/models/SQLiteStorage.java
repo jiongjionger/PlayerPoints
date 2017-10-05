@@ -8,9 +8,7 @@ import org.bukkit.command.CommandSender;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -143,12 +141,12 @@ public class SQLiteStorage extends DatabaseStorage {
     }
 
     @Override
-    public void getPlayers(Consumer<Collection<String>> collectionConsumer) {
+    public void getPlayers(Consumer<List<String>> collectionConsumer) {
         ExecutorService executorService = Executors.newCachedThreadPool();
         try {
             executorService
                     .execute(() -> {
-                        Collection<String> players = new HashSet<String>();
+                        List<String> players = new ArrayList<>();
 
                         PreparedStatement statement = null;
                         ResultSet result = null;
