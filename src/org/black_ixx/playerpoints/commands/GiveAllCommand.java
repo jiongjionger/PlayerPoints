@@ -7,6 +7,7 @@ import org.black_ixx.playerpoints.models.Flag;
 import org.black_ixx.playerpoints.permissions.PermissionHandler;
 import org.black_ixx.playerpoints.permissions.PermissionNode;
 import org.black_ixx.playerpoints.services.PointsCommand;
+import org.black_ixx.playerpoints.storage.StorageHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -46,6 +47,7 @@ public class GiveAllCommand implements PointsCommand {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player != null) {
                     if (plugin.getAPI().give(player.getUniqueId(), anzahl)) {
+                        plugin.getModuleForClass(StorageHandler.class).logPlayerPointsChange(player.getName(),sender,anzahl);
                         info.put(Flag.PLAYER, sender.getName());
                         final String receiveMessage = LocalizeConfig.parseString(
                                 LocalizeNode.POINTS_PAY_RECEIVE, info);

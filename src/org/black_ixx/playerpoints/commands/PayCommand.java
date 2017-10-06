@@ -8,6 +8,7 @@ import org.black_ixx.playerpoints.models.Flag;
 import org.black_ixx.playerpoints.permissions.PermissionHandler;
 import org.black_ixx.playerpoints.permissions.PermissionNode;
 import org.black_ixx.playerpoints.services.PointsCommand;
+import org.black_ixx.playerpoints.storage.StorageHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -72,6 +73,7 @@ public class PayCommand implements PointsCommand {
             }
             UUID id = plugin.translateNameToUUID(playerName);
             if (plugin.getAPI().pay(((Player) sender).getUniqueId(), id, intanzahl)) {
+                plugin.getModuleForClass(StorageHandler.class).logPlayerPointsChange(playerName, sender, intanzahl);
                 info.put(Flag.PLAYER, playerName);
                 info.put(Flag.AMOUNT, "" + args[1]);
                 final String sendMessage = LocalizeConfig.parseString(
