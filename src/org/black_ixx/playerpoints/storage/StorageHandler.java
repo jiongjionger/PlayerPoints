@@ -58,7 +58,9 @@ public class StorageHandler implements IStorage, IModule {
 
     @Override
     public void logPlayerPointsChange(String playerName, CommandSender commandSender, int amount) {
-        this.storage.logPlayerPointsChange(playerName, commandSender, amount);
+        if (plugin.getModuleForClass(RootConfig.class).isLogEnable) {
+            this.storage.logPlayerPointsChange(playerName, commandSender, amount);
+        }
     }
 
     @Override
