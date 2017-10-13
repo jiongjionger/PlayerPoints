@@ -4,6 +4,7 @@ import com.evilmidget38.UUIDFetcher;
 import org.black_ixx.playerpoints.commands.Commander;
 import org.black_ixx.playerpoints.config.LocalizeConfig;
 import org.black_ixx.playerpoints.config.RootConfig;
+import org.black_ixx.playerpoints.listeners.PlayerGameListener;
 import org.black_ixx.playerpoints.listeners.RestrictionListener;
 import org.black_ixx.playerpoints.listeners.VotifierListener;
 import org.black_ixx.playerpoints.services.IModule;
@@ -68,6 +69,9 @@ public class PlayerPoints extends JavaPlugin {
         }
         final PluginManager pm = getServer().getPluginManager();
         // Register votifier listener, if applicable
+        if (rootConfig.isCachePlayerNameEnable) {
+            pm.registerEvents(new PlayerGameListener(this),this);
+        }
         if (rootConfig.voteEnabled) {
             final Plugin votifier = pm.getPlugin("Votifier");
             if (votifier != null) {

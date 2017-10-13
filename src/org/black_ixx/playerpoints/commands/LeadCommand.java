@@ -57,7 +57,8 @@ public class LeadCommand extends CommandHandler {
             }
             return true;
         }
-        plugin.getModuleForClass(StorageHandler.class).getPlayers(strings -> {
+        StorageHandler moduleForClass = plugin.getModuleForClass(StorageHandler.class);
+        moduleForClass.getPlayers(strings -> {
             Integer pageCurrent = page.getOrDefault(sender.getName(), 1);
             if (pageCurrent < 1) {
                 pageCurrent = 1;
@@ -65,9 +66,13 @@ public class LeadCommand extends CommandHandler {
             sender.sendMessage(ChatColor.BLUE + "=== " + ChatColor.GRAY
                     + PlayerPoints.TAG + " Points Leaders " + ChatColor.BLUE + "=== "
                     + ChatColor.GRAY + pageCurrent + ":" + strings.size());
-            strings.subList((pageCurrent - 1) * 10, pageCurrent * 10).forEach(string -> {
+            int i = pageCurrent * 10;
+            if (i > strings.size()){
+                i = strings.size();
+            }
+            strings.subList((pageCurrent - 1) * 10, i).forEach(string -> {
                 sender.sendMessage(ChatColor.AQUA + "" + (strings.indexOf(string) + 1) + ". "
-                        + ChatColor.GRAY + Bukkit.getOfflinePlayer(UUID.fromString(string)).getName() + ChatColor.WHITE
+                        + ChatColor.GRAY + moduleForClass.getPlayerCacheName(UUID.fromString(string)) + ChatColor.WHITE
                         + " - " + ChatColor.GOLD + plugin.getAPI().look(UUID.fromString(string)));
             });
         });

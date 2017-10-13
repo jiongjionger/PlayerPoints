@@ -2,6 +2,7 @@ package org.black_ixx.playerpoints.storage.models;
 
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.storage.IStorage;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,10 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -140,6 +138,16 @@ public class YAMLStorage implements IStorage {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void cachePlayerName(UUID uuid, String cacheName) {
+
+    }
+
+    @Override
+    public String getPlayerCacheName(UUID uuid) {
+        return Bukkit.getOfflinePlayer(uuid).getName();
     }
 
     @Override

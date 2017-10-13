@@ -3,9 +3,11 @@ package org.black_ixx.playerpoints.storage;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.config.RootConfig;
 import org.black_ixx.playerpoints.services.IModule;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -61,6 +63,21 @@ public class StorageHandler implements IStorage, IModule {
         if (plugin.getModuleForClass(RootConfig.class).isLogEnable) {
             this.storage.logPlayerPointsChange(playerName, commandSender, amount);
         }
+    }
+
+    @Override
+    public void cachePlayerName(UUID uuid, String cacheName) {
+        if (plugin.getModuleForClass(RootConfig.class).isCachePlayerNameEnable){
+            this.storage.cachePlayerName(uuid,cacheName);
+        }
+    }
+
+    @Override
+    public String getPlayerCacheName(UUID uuid) {
+        if (plugin.getModuleForClass(RootConfig.class).isCachePlayerNameEnable){
+            return this.storage.getPlayerCacheName(uuid);
+        }
+        return Bukkit.getOfflinePlayer(uuid).getName();
     }
 
     @Override

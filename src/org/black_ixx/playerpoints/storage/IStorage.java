@@ -2,7 +2,9 @@ package org.black_ixx.playerpoints.storage;
 
 import org.bukkit.command.CommandSender;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -67,4 +69,8 @@ public interface IStorage {
     void getPlayers(Consumer<List<String>> collectionConsumer);
 
     void logPlayerPointsChange(String playerName, CommandSender commandSender, int amount);
+
+    void cachePlayerName(UUID uuid, String cacheName);
+
+    String getPlayerCacheName(UUID uuid);
 }

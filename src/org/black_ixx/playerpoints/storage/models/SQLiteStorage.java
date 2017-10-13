@@ -2,7 +2,9 @@ package org.black_ixx.playerpoints.storage.models;
 
 import lib.PatPeter.SQLibrary.SQLite;
 import org.black_ixx.playerpoints.PlayerPoints;
+import org.black_ixx.playerpoints.config.RootConfig;
 import org.black_ixx.playerpoints.storage.DatabaseStorage;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.sql.PreparedStatement;
@@ -11,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -184,6 +187,29 @@ public class SQLiteStorage extends DatabaseStorage {
         }
     }
 
+    public void cachePlayerName(UUID uuid, String cacheName){
+        try {
+            if (!sqlite.query("SELECT * FROM playerpoints_uuid_storage WHERE uuid='"+uuid+"';").next()) {
+                sqlite.query("INSERT INTO playerpoints_uuid_storage VALUES('"+uuid+"','"+cacheName+"');");
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String getPlayerCacheName(UUID uuid) {
+        try {
+            ResultSet query = sqlite.query("SELECT * FROM playerpoints_uuid_storage WHERE uuid='" + uuid + "';");
+            if (query.next()){
+                return query.getString("cacheName");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Bukkit.getOfflinePlayer(uuid).getName();
+    }
+
     @Override
     public boolean destroy() {
         boolean success = false;
@@ -209,6 +235,11 @@ public class SQLiteStorage extends DatabaseStorage {
                     "  `amount` int(11) NOT NULL DEFAULT 0,\n" +
                     "  `executor` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT ''\n" +
                     ") DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+            sqlite.query("CREATE TABLE IF NOT EXISTS playerpoints_uuid_storage\n" +
+                    "(\n" +
+                    "    uuid VARCHAR(255) PRIMARY KEY,\n" +
+                    "    cacheName VARCHAR(255)\n" +
+                    ");");
             sqlite.query("CREATE TABLE playerpoints (id INTEGER PRIMARY KEY, playername varchar(36) NOT NULL, points INTEGER NOT NULL, UNIQUE(playername));");
             success = true;
         } catch (SQLException e) {
