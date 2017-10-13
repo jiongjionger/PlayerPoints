@@ -339,6 +339,12 @@ public class MySQLStorage extends DatabaseStorage {
             plugin.getLogger().info(String.format("Creating %s table", tableName));
         }
         try {
+            mysql.query("CREATE TABLE IF NOT EXISTS playerpoints_log (\n" +
+                    "  `player` varchar(255) NOT NULL DEFAULT '',\n" +
+                    "  `date` varchar(255) NOT NULL DEFAULT 0,\n" +
+                    "  `amount` int(11) NOT NULL DEFAULT 0,\n" +
+                    "  `executor` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT ''\n" +
+                    ") DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
             mysql.query(String.format("CREATE TABLE %s (id INT UNSIGNED NOT NULL AUTO_INCREMENT, playername varchar(36) NOT NULL, points INT NOT NULL, PRIMARY KEY(id), UNIQUE(playername));", tableName));
             success = true;
         } catch (SQLException e) {
