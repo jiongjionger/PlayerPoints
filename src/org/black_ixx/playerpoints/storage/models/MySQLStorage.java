@@ -375,7 +375,7 @@ public class MySQLStorage extends DatabaseStorage {
                     "    uuid VARCHAR(255) PRIMARY KEY,\n" +
                     "    cacheName VARCHAR(255)\n" +
                     ");");
-            mysql.query(String.format("CREATE TABLE %s (id INT UNSIGNED NOT NULL AUTO_INCREMENT, playername varchar(36) NOT NULL, points INT NOT NULL, PRIMARY KEY(id), UNIQUE(playername));", tableName));
+            mysql.query(String.format("CREATE TABLE IF NOT EXISTS %s (id INT UNSIGNED NOT NULL AUTO_INCREMENT, playername varchar(36) NOT NULL, points INT NOT NULL, PRIMARY KEY(id), UNIQUE(playername));", tableName));
             success = true;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE,

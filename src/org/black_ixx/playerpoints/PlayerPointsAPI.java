@@ -19,7 +19,6 @@ public class PlayerPointsAPI {
      * Plugin instance.
      */
     private final PlayerPoints plugin;
-    private LoadingCache<UUID, Integer> playerPointsCache;
 
     /**
      * Constructor
@@ -28,17 +27,6 @@ public class PlayerPointsAPI {
      */
     public PlayerPointsAPI(PlayerPoints p) {
         this.plugin = p;
-        this.playerPointsCache = CacheBuilder
-                .newBuilder()
-                .expireAfterWrite(60, TimeUnit.SECONDS)
-                .expireAfterAccess(10, TimeUnit.SECONDS)
-                .maximumSize(1000)
-                .build(new CacheLoader<UUID, Integer>() {
-                    @Override
-                    public Integer load(UUID key) throws Exception {
-                        return plugin.getModuleForClass(StorageHandler.class).getPoints(key.toString());
-                    }
-                });
     }
 
     /**
@@ -110,12 +98,7 @@ public class PlayerPointsAPI {
      * @return Points that the player has
      */
     public int look(UUID playerId) {
-        try {
-            return playerPointsCache.get(playerId);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-            return 0;
-        }
+        return plugin.getModuleForClass(StorageHandler.class).getPoints(playerId.toString());
     }
 
     @Deprecated
