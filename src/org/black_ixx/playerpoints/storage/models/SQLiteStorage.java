@@ -1,8 +1,8 @@
 package org.black_ixx.playerpoints.storage.models;
 
+import com.google.common.base.Charsets;
 import lib.PatPeter.SQLibrary.SQLite;
 import org.black_ixx.playerpoints.PlayerPoints;
-import org.black_ixx.playerpoints.config.RootConfig;
 import org.black_ixx.playerpoints.storage.DatabaseStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -187,12 +187,12 @@ public class SQLiteStorage extends DatabaseStorage {
         }
     }
 
-    public void cachePlayerName(UUID uuid, String cacheName){
+    public void cachePlayerName(UUID uuid, String cacheName) {
         try {
-            if (!sqlite.query("SELECT * FROM playerpoints_uuid_storage WHERE uuid='"+uuid+"';").next()) {
-                sqlite.query("INSERT INTO playerpoints_uuid_storage VALUES('"+uuid+"','"+cacheName+"');");
+            if (!sqlite.query("SELECT * FROM playerpoints_uuid_storage WHERE uuid='" + uuid + "';").next()) {
+                sqlite.query("INSERT INTO playerpoints_uuid_storage VALUES('" + uuid + "','" + cacheName + "');");
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -201,13 +201,31 @@ public class SQLiteStorage extends DatabaseStorage {
     public String getPlayerCacheName(UUID uuid) {
         try {
             ResultSet query = sqlite.query("SELECT * FROM playerpoints_uuid_storage WHERE uuid='" + uuid + "';");
-            if (query.next()){
+            if (query.next()) {
                 return query.getString("cacheName");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return Bukkit.getOfflinePlayer(uuid).getName();
+    }
+
+    @Override
+    public UUID getPlayerCacheUUID(String name) {
+        try {
+            ResultSet query = sqlite.query("SELECT * FROM playerpoints_uuid_storage WHERE cacheName='" + name + "';");
+            if (query.next()) {
+                return UUID.fromString(query.getString("uuid"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (Bukkit.getServer().getOnlineMode()) {
+            return Bukkit.getOfflinePlayer(name).getUniqueId();
+        }
+        UUID uniqueId = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
+        cachePlayerName(uniqueId, name);
+        return uniqueId;
     }
 
     @Override

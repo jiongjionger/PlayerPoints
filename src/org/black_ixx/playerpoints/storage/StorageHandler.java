@@ -67,17 +67,25 @@ public class StorageHandler implements IStorage, IModule {
 
     @Override
     public void cachePlayerName(UUID uuid, String cacheName) {
-        if (plugin.getModuleForClass(RootConfig.class).isCachePlayerNameEnable){
-            this.storage.cachePlayerName(uuid,cacheName);
+        if (plugin.getModuleForClass(RootConfig.class).isCachePlayerNameEnable) {
+            this.storage.cachePlayerName(uuid, cacheName);
         }
     }
 
     @Override
     public String getPlayerCacheName(UUID uuid) {
-        if (plugin.getModuleForClass(RootConfig.class).isCachePlayerNameEnable){
+        if (plugin.getModuleForClass(RootConfig.class).isCachePlayerNameEnable) {
             return this.storage.getPlayerCacheName(uuid);
         }
         return Bukkit.getOfflinePlayer(uuid).getName();
+    }
+
+    @Override
+    public UUID getPlayerCacheUUID(String name) {
+        if (plugin.getModuleForClass(RootConfig.class).isCachePlayerNameEnable) {
+            return this.storage.getPlayerCacheUUID(name);
+        }
+        return Bukkit.getOfflinePlayer(name).getUniqueId();
     }
 
     @Override

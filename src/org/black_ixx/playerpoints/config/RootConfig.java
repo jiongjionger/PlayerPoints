@@ -28,7 +28,7 @@ public class RootConfig implements IModule {
      * Import / export sql, vault and vote options.
      */
     public boolean importSQL, exportSQL, voteOnline, voteEnabled, vault,
-            hasPlayedBefore, autocompleteOnline, debugDatabase, debugUUID,isLogEnable,isCachePlayerNameEnable;
+            hasPlayedBefore, autocompleteOnline, debugDatabase, debugUUID, isLogEnable, isCachePlayerNameEnable;
     /**
      * Storage info.
      */
@@ -74,8 +74,8 @@ public class RootConfig implements IModule {
         hasPlayedBefore = config.getBoolean("restrictions.hasPlayedBefore",
                 false);
         autocompleteOnline = config.getBoolean("restrictions.autocompleteOnline", false);
-        isLogEnable = config.getBoolean("isLogEnable",true);
-        isCachePlayerNameEnable = config.getBoolean("isCachePlayerNameEnable",true);
+        isLogEnable = config.getBoolean("isLogEnable", true);
+        isCachePlayerNameEnable = config.getBoolean("isCachePlayerNameEnable", true);
     }
 
     /**
@@ -107,8 +107,8 @@ public class RootConfig implements IModule {
         importSQL = config.getBoolean("mysql.import.use", false);
         retryLimit = config.getInt("mysql.retry", 10);
         exportSQL = config.getBoolean("mysql.export.use", false);
-        isLogEnable = config.getBoolean("isLogEnable",true);
-        isCachePlayerNameEnable = config.getBoolean("isCachePlayerNameEnable",true);
+        isLogEnable = config.getBoolean("isLogEnable", true);
+        isCachePlayerNameEnable = config.getBoolean("isCachePlayerNameEnable", true);
         final String databaseImportSource = config.getString(
                 "mysql.import.source", "YAML");
         if (databaseImportSource.equalsIgnoreCase("SQLITE")) {
@@ -157,8 +157,8 @@ public class RootConfig implements IModule {
         defaults.put("vote.online", false);
         defaults.put("restrictions.autocompleteOnline", false);
         defaults.put("restrictions.hasPlayedBefore", false);
-        defaults.put("isLogEnable",true);
-        defaults.put("isCachePlayerNameEnable",true);
+        defaults.put("isLogEnable", true);
+        defaults.put("isCachePlayerNameEnable", true);
         defaults.put("debug.database", false);
         defaults.put("debug.uuid", false);
         defaults.put("vault", false);

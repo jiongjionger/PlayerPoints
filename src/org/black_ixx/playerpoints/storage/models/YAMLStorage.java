@@ -1,5 +1,6 @@
 package org.black_ixx.playerpoints.storage.models;
 
+import com.google.common.base.Charsets;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.storage.IStorage;
 import org.bukkit.Bukkit;
@@ -148,6 +149,14 @@ public class YAMLStorage implements IStorage {
     @Override
     public String getPlayerCacheName(UUID uuid) {
         return Bukkit.getOfflinePlayer(uuid).getName();
+    }
+
+    @Override
+    public UUID getPlayerCacheUUID(String name) {
+        if (!Bukkit.getOnlineMode()) {
+            return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
+        }
+        return Bukkit.getOfflinePlayer(name).getUniqueId();
     }
 
     @Override

@@ -8,7 +8,6 @@ import org.black_ixx.playerpoints.permissions.PermissionHandler;
 import org.black_ixx.playerpoints.permissions.PermissionNode;
 import org.black_ixx.playerpoints.services.CommandHandler;
 import org.black_ixx.playerpoints.storage.StorageHandler;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -67,7 +66,7 @@ public class LeadCommand extends CommandHandler {
                     + PlayerPoints.TAG + " Points Leaders " + ChatColor.BLUE + "=== "
                     + ChatColor.GRAY + pageCurrent + ":" + strings.size());
             int i = pageCurrent * 10;
-            if (i > strings.size()){
+            if (i > strings.size()) {
                 i = strings.size();
             }
             strings.subList((pageCurrent - 1) * 10, i).forEach(string -> {

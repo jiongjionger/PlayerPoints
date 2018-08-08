@@ -1,6 +1,5 @@
 package org.black_ixx.playerpoints;
 
-import com.evilmidget38.UUIDFetcher;
 import org.black_ixx.playerpoints.commands.Commander;
 import org.black_ixx.playerpoints.config.LocalizeConfig;
 import org.black_ixx.playerpoints.config.RootConfig;
@@ -19,7 +18,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Main plugin class for PlayerPoints.
@@ -70,7 +68,7 @@ public class PlayerPoints extends JavaPlugin {
         final PluginManager pm = getServer().getPluginManager();
         // Register votifier listener, if applicable
         if (rootConfig.isCachePlayerNameEnable) {
-            pm.registerEvents(new PlayerGameListener(this),this);
+            pm.registerEvents(new PlayerGameListener(this), this);
         }
         if (rootConfig.voteEnabled) {
             final Plugin votifier = pm.getPlugin("Votifier");
@@ -229,31 +227,13 @@ public class PlayerPoints extends JavaPlugin {
         }
 
         // Last resort, attempt bukkit api lookup
-        if (id == null && Bukkit.getServer().getOnlineMode()) {
-            if (config.debugUUID) {
-                getLogger().info("translateNameToUUID() - Attempting online lookup");
-            }
-            UUIDFetcher fetcher = new UUIDFetcher(Collections.singletonList(name));
-            try {
-                Map<String, UUID> map = fetcher.call();
-                for (Map.Entry<String, UUID> entry : map.entrySet()) {
-                    if (name.equalsIgnoreCase(entry.getKey())) {
-                        id = entry.getValue();
-                        if (config.debugUUID) {
-                            getLogger().info("translateNameToUUID() web player UUID found: " + ((id == null) ? id : id.toString()));
-                        }
-                        break;
-                    }
-                }
-            } catch (Exception e) {
-                getLogger().log(Level.SEVERE, "Exception on online UUID fetch", e);
-            }
-        } else if (id == null && !Bukkit.getServer().getOnlineMode()) {
+        if (id == null && !Bukkit.getServer().getOnlineMode()) {
             //There's nothing we can do but attempt to get the UUID from old method.
-            id = Bukkit.getServer().getOfflinePlayer(name).getUniqueId();
+            id = getModuleForClass(StorageHandler.class).getPlayerCacheUUID(name);
             if (config.debugUUID) {
                 getLogger().info("translateNameToUUID() offline player UUID found: " + ((id == null) ? id : id.toString()));
             }
+
         }
         return id;
     }

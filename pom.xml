@@ -58,12 +58,14 @@
     <!-- Distribution management -->
     <distributionManagement>
         <repository>
-            <id>internal</id>
-            <url>${dakani.repo}/releases</url>
+            <id>nexus-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://work.ymmclt.com:8081/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
-            <id>snapshots</id>
-            <url>${dakani.repo}/snapshots</url>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://work.ymmclt.com:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <!-- Project dependencies. -->
